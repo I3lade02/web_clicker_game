@@ -7,11 +7,14 @@ import GeneratorCard from './components/GeneratorCard';
 import PrestigeUpgradeCard from './components/PrestigeUpgradeCard';
 import AchievementToast from './components/AchievementToast';
 import AchievementsPanel from './components/AchievementsPanel';
+import ProjectsPanel from './components/ProjectsPanel';
 import { upgrades } from './features/upgrades';
 import { generators } from './features/generators';
 import { prestigeUpgrades } from './features/prestigeUpgrades';
 import { achievements } from './features/achievements';
 import { saveGame, loadGame } from './utils/saveManager';
+import { projects as defaultProjects } from './features/projects';
+import { Toast, ToastContainer } from 'react-bootstrap';
 import './styles/main.css';
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
   const [recentAchievement, setRecentAchievement] = useState(null);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [projectList, setProjectList] = useState(defaultProjects);
+  const [showProjects, setShowProjects] = useState(false);
+  const [recentProjects, setRecentProjects] = useState(null);
 
   const clickBonus = purchasedPrestigeUpgrades.includes('click-boost') ? refactorPoints : 0;
   const generatorMultiplier = purchasedPrestigeUpgrades.includes('generator-efficiency') ? 1 + refactorPoints * 0.1 : 1;
@@ -136,6 +142,22 @@ function App() {
     }
   };
 
+  const handleProjectComplete = (projectId) => {
+  setProjectList((prev) =>
+    prev.map((p) =>
+      p.id === projectId ? { ...p, completed: true } : p
+    )
+  );
+  const completed = defaultProjects.find(p => p.id === projectId);
+  if (completed?.reward?.type === 'clickPower') {
+    setClickPower(prev => prev + completed.reward.value);
+  } else if (completed?.reward?.type === 'refactorPoints') {
+    setRefactorPoints(prev => prev + completed.reward.value);
+  }
+  setRecentProjects(completed);
+  setTimeout(() => setRecentProjects(null), 4000);
+};
+
   return (
     <div className="container text-center mt-5">
       <h1>Click to Compile</h1>
@@ -143,7 +165,13 @@ function App() {
         className='btn btn-outline-secondary position-absolute top-0 end-0 m-3'
         onClick={() => setShowAchievements(true)}>
           🏆 Achievements
-        </button>
+      </button>
+      <button 
+        className='btn btn-outline-primary position-absolute top-0 start-0 m-3'
+        onClick={() => setShowProjects(true)}
+      >
+        📦 Projects
+      </button>
       <CodeStatsPanel loc={linesOfCode} clickPower={clickPower + clickBonus} refactorPoints={refactorPoints} generatorIncome={generatorIncome} />
       <CodeClicker onClick={handleClick} />
 
@@ -204,6 +232,27 @@ function App() {
         unlocked={unlockedAchievements}
         stats={{ totalClicks, totalLinesOfCode}}
       />
+
+      <ProjectsPanel
+        show={showProjects}
+        onClose={() => setShowProjects(false)}
+        projects={projectList}
+        onComplete={handleProjectComplete}
+        totalLinesOfCode={totalLinesOfCode}
+      />
+
+      {recentProjects && (
+        <ToastContainer position='top-center' className='p-3'>
+          <Toast bg='info' show={true} delay={4000} autohide>
+            <Toast.Header closeButton={false}>
+              <strong className='me-auto'>Project Completed</strong>
+            </Toast.Header>
+            <Toast.Body>
+              You completed: <strong>{recentProjects.name}</strong>!🎉
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
+      )}
     </div>
     </div>
   );
