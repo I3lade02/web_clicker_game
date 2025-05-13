@@ -6,6 +6,7 @@ import UpgradeCard from './components/UpgradeCard';
 import GeneratorCard from './components/GeneratorCard';
 import PrestigeUpgradeCard from './components/PrestigeUpgradeCard';
 import AchievementToast from './components/AchievementToast';
+import AchievementsPanel from './components/AchievementsPanel';
 import { upgrades } from './features/upgrades';
 import { generators } from './features/generators';
 import { prestigeUpgrades } from './features/prestigeUpgrades';
@@ -24,6 +25,7 @@ function App() {
   const [purchasedPrestigeUpgrades, setPurchasedPrestigeUpgrades] = useState([]);
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
   const [recentAchievement, setRecentAchievement] = useState(null);
+  const [showAchievements, setShowAchievements] = useState(false);
 
   const clickBonus = purchasedPrestigeUpgrades.includes('click-boost') ? refactorPoints : 0;
   const generatorMultiplier = purchasedPrestigeUpgrades.includes('generator-efficiency') ? 1 + refactorPoints * 0.1 : 1;
@@ -97,12 +99,14 @@ function App() {
     }
   };
 
-  const handleBuyGenerator = (generator) => {
-    if (linesOfCode >= generator.baseCost) {
-      setLinesOfCode((prev) => prev - generator.baseCost);
+  const handleBuyGenerator = (generator, cost) => {
+    const qty = purchasedGenerators[generator.id] || 0;
+    const dynamicCost = cost;
+    if (linesOfCode >= dynamicCost) {
+      setLinesOfCode((prev) => prev - dynamicCost);
       setPurchasedGenerators((prev) => ({
         ...prev,
-        [generator.id]: (prev[generator.id] || 0) + 1
+        [generator.id]: qty + 1
       }));
     }
   };
@@ -135,6 +139,11 @@ function App() {
   return (
     <div className="container text-center mt-5">
       <h1>Click to Compile</h1>
+      <button
+        className='btn btn-outline-secondary position-absolute top-0 end-0 m-3'
+        onClick={() => setShowAchievements(true)}>
+          🏆 Achievements
+        </button>
       <CodeStatsPanel loc={linesOfCode} clickPower={clickPower + clickBonus} refactorPoints={refactorPoints} generatorIncome={generatorIncome} />
       <CodeClicker onClick={handleClick} />
 
@@ -161,17 +170,21 @@ function App() {
 
       <h3 className="mt-5">Generators</h3>
       <div className="row mt-3">
-        {generators.map((gen) => (
-          <div className="col-md-4 mb-3" key={gen.id}>
-            <GeneratorCard
-              generator={gen}
-              quantity={purchasedGenerators[gen.id] || 0}
-              onBuy={() => handleBuyGenerator(gen)}
-              disabled={linesOfCode < gen.baseCost}
-            />
-          </div>
-        ))}
-      </div>
+        {generators.map((gen) => {
+          const qty = purchasedGenerators[gen.id] || 0;
+          const dynamicCost = gen.baseCost * Math.pow(1.15, qty);
+          return (
+            <div className='col-md-4 mb-3' key={gen.id}>
+              <GeneratorCard
+                generator={gen}
+                quantity={qty}
+                currentCost={dynamicCost}
+                onBuy={() => handleBuyGenerator(gen, dynamicCost)}
+                disabled={linesOfCode < dynamicCost}
+              />
+        </div>
+          );
+        })};
 
       <h3 className='mt-5'>Refactor Upgrades</h3>
       <div className='row mt-3'>
@@ -185,6 +198,13 @@ function App() {
           </div>
         ))}
       </div>
+      <AchievementsPanel
+        show={showAchievements}
+        onClose={() => setShowAchievements(false)}
+        unlocked={unlockedAchievements}
+        stats={{ totalClicks, totalLinesOfCode}}
+      />
+    </div>
     </div>
   );
 }

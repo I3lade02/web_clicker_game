@@ -1,0 +1,45 @@
+.floating-text {
+    position: fixed;
+    color: limegreen;
+    font-weight: bold;
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+}
+
+.generator-card {
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.active-generator {
+    box-shadow: 0 0 10px 2px #00ff99;
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 10px 2px #00ff99;
+    }
+    50% {
+        box-shadow: 0 0 20px 4px #00ffaa;
+    }
+    100% {
+        box-shadow: 0 0 10px 2px #00ff99;
+    }
+}
+
+.click-area {
+    position: relative;
+    display: inline-block;
+}
