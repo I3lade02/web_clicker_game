@@ -43,3 +43,31 @@
     position: relative;
     display: inline-block;
 }
+
+body.theme-light {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.theme-dark {
+    background-color: #121212;
+    color: #eeeeee;
+}
+
+body.theme-matrix {
+    background-color: #000000;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+}
+
+body.theme-vscode {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body.theme-retro {
+    background-color: #222222;
+    color: #00ffcc;
+    font-family: 'Lucida Console', monospace;
+}

@@ -32,6 +32,7 @@ function App() {
   const [projectList, setProjectList] = useState(defaultProjects);
   const [showProjects, setShowProjects] = useState(false);
   const [recentProjects, setRecentProjects] = useState(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   const clickBonus = purchasedPrestigeUpgrades.includes('click-boost') ? refactorPoints : 0;
   const generatorMultiplier = purchasedPrestigeUpgrades.includes('generator-efficiency') ? 1 + refactorPoints * 0.1 : 1;
@@ -90,6 +91,12 @@ function App() {
       }
     });
   }, [totalLinesOfCode, totalClicks, unlockedAchievements]);
+
+  useEffect(() => {
+    document.body.className = '';
+    document.body.classList.add(`theme-${theme}`);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const handleClick = () => {
     setLinesOfCode((prev) => prev + clickPower + clickBonus);
@@ -172,6 +179,18 @@ function App() {
       >
         📦 Projects
       </button>
+      <select
+        className='form-select w-auto d-inline-block position-absolute top-0 start-50 translate-middle-x m-3'
+        value={theme}
+        onChange={(e) => setTheme(e.target.value)}
+      >
+        <option value="light">🌞 Light</option>
+        <option value="dark">🌒 Dark</option>
+        <option value="matrix">💻 Matrix</option>
+        <option value="vscode">🧪 VS Code</option>
+        <option value="retro">🕹 Retro Terminal</option>
+      </select>
+        
       <CodeStatsPanel loc={linesOfCode} clickPower={clickPower + clickBonus} refactorPoints={refactorPoints} generatorIncome={generatorIncome} />
       <CodeClicker onClick={handleClick} />
 
