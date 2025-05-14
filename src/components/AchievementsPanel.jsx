@@ -11,6 +11,8 @@ function AchievementsPanel({ show, onClose, unlocked, stats}) {
         if (ach.id === 'first-click') return Math.min(stats.totalClicks, 1);
         if (ach.id === 'ten-thousand-loc') return Math.min(stats.totalLinesOfCode, 10000);
         if (ach.id === 'clickmaster') return Math.min(stats.totalClicks, 1000);
+        if (ach.id === 'power-upgrade') return Math.min(stats.purchasedUpgrades, 3);
+        if (ach.id === 'aint-working') return Math.min(stats.purchasedGenerators, 100);
         return 0;
     };
 
