@@ -16,6 +16,12 @@ return (
             <div key={proj.id} className="mb-4">
               <h5>{proj.name}</h5>
               <p>{proj.description}</p>
+              <p>
+                <strong>Reward:</strong>{' '}
+                {proj.reward.type === 'clickPower'
+                ? `+${proj.reward.value} Click Power`
+                : `+${proj.reward.value} Refactor Points(3)`}
+              </p>
               <ProgressBar
                 now={progress}
                 label={`${Math.floor(progress)}%`}

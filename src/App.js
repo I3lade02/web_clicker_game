@@ -185,14 +185,14 @@ function App() {
         onChange={(e) => setTheme(e.target.value)}
       >
         <option value="light">🌞 Light</option>
-        <option value="dark">🌒 Dark</option>
         <option value="matrix">💻 Matrix</option>
         <option value="vscode">🧪 VS Code</option>
         <option value="retro">🕹 Retro Terminal</option>
+        <option value="lofi">🎧 Lofi</option>
       </select>
         
       <CodeStatsPanel loc={linesOfCode} clickPower={clickPower + clickBonus} refactorPoints={refactorPoints} generatorIncome={generatorIncome} />
-      <CodeClicker onClick={handleClick} />
+      <CodeClicker onClick={handleClick} clickValue={clickPower + clickBonus}/>
 
       <div className="mt-4">
         <button className="btn btn-warning" onClick={handleRefactor}>

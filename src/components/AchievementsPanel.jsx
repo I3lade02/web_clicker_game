@@ -8,12 +8,20 @@ function AchievementsPanel({ show, onClose, unlocked, stats}) {
     const overallProgress = (totalAchieved / totalAvailable) * 100;
 
     const getProgress = (ach) => {
-        if (ach.id === 'first-click') return Math.min(stats.totalClicks, 1);
-        if (ach.id === 'ten-thousand-loc') return Math.min(stats.totalLinesOfCode, 10000);
-        if (ach.id === 'clickmaster') return Math.min(stats.totalClicks, 1000);
-        if (ach.id === 'power-upgrade') return Math.min(stats.purchasedUpgrades, 3);
-        if (ach.id === 'aint-working') return Math.min(stats.purchasedGenerators, 100);
-        return 0;
+        switch (ach.id) {
+            case 'power-upgrade':
+                return (stats.purchasedUpgrades || []).length;
+            case 'aint-working':
+                return Object.values(stats.purchasedGenerators ?? {}).reduce((sum, qty) => sum + qty, 0);
+            case 'first-click':
+                return Math.min(stats.totalClicks, 1);
+            case 'ten-thousand-loc':
+                return Math.min(stats.totalLinesOfCode, 10000);
+            case 'clickmaster':
+                return Math.min(stats.totalClicks, 1000);
+            default:
+                return 0;
+        }
     };
 
     return (
@@ -28,7 +36,13 @@ function AchievementsPanel({ show, onClose, unlocked, stats}) {
                 {achievements.map((ach) => {
                     const isUnlocked = unlocked.includes(ach.id);
                     const current = getProgress(ach);
-                    const goal = ach.id === 'first-click' ? 1 : ach.id === 'ten-thousand-loc' ? 10000 : ach.id === 'clickmaster' ? 1000 : 1;
+                    const goal = {
+                        'first-click': 1,
+                        'ten-thousand-loc': 10000,
+                        'clickmaster': 1000,
+                        'power-upgrade': 3,
+                        'aint-working': 100,
+                    }[ach.id] || 1;
                     return (
                         <div key={ach.id} className='mb-3'>
                             <h6>{isUnlocked ? '✅' : '🔒'} {ach.name}</h6>

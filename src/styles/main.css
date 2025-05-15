@@ -71,3 +71,12 @@ body.theme-retro {
     color: #00ffcc;
     font-family: 'Lucida Console', monospace;
 }
+
+body.theme-lofi {
+  background: linear-gradient(to bottom right, #b0a695, #d8cfc4);
+  color: #d4d4d4;
+  font-family: 'Georgia', serif;
+  background-image: url('https://preview.redd.it/my-first-lofi-inspired-art-v0-3w1vmxlms7na1.png?width=1080&crop=smart&auto=webp&s=3ebf4acdb725274151a020d7127bdc30ea38bf59');
+  background-size: cover;
+  background-attachment: fixed;
+}

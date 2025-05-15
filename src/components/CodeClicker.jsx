@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import '../styles/main.css';
 
-function CodeClicker({ onClick }) {
+function CodeClicker({ onClick, clickValue }) {
     const [clicks, setClicks] = useState([]);
 
     const handleClick = (e) => {
@@ -10,6 +10,7 @@ function CodeClicker({ onClick }) {
             id: Date.now(),
             x: e.clientX,
             y: e.clientY,
+            value: clickValue.toFixed(1)
         };
         setClicks((prev) => [...prev, newClick]);
         onClick();
@@ -29,7 +30,7 @@ function CodeClicker({ onClick }) {
                     className='floating-text'
                     style={{ left: click.x, top: click.y }}
                 >
-                    +LOC
+                    +{clickValue}
                 </span>
             ))}
         </div>

@@ -21,12 +21,17 @@ export const achievements = [
     id: 'power-upgrade',
     name: 'The power of upgrades',
     description: 'Own all the available upgrades',
-    condition: (stats) => stats.purchasedUpgrades === 3
+    condition: (stats) => Array.isArray(stats?.purchasedUpgrades) && stats.purchasedUpgrades.length === 3
   },
   {
     id: 'aint-working',
     name: "You ain't working anymore",
     description: 'Own 100 generators',
-    condition: (stats) => stats.purchasedGenerators >= 100
-  },
+    condition: (stats) => {
+      if (!stats?.purchasedGenerators || typeof stats.purchasedGenerators !== 'object') return false;
+      const total = Object.values(stats.purchasedGenerators).reduce((sum, qty) => sum + qty, 0);
+      return total >= 100;
+    }
+  }
+
 ];
