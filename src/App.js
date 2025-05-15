@@ -231,7 +231,7 @@ function App() {
               />
         </div>
           );
-        })};
+        })}
 
       <h3 className='mt-5'>Refactor Upgrades</h3>
       <div className='row mt-3'>
